@@ -1,29 +1,43 @@
 const plant = document.getElementById("plant");
 
 /**
- * Centralized terrarium state
- * (kept intentionally small)
+ * Create leaves
+ */
+const leftLeaf = document.createElement("div");
+leftLeaf.className = "leaf left";
+
+const rightLeaf = document.createElement("div");
+rightLeaf.className = "leaf right";
+
+plant.appendChild(leftLeaf);
+plant.appendChild(rightLeaf);
+
+/**
+ * Terrarium state
  */
 const terrarium = {
-  growth: 42,
-  maxGrowth: 96,
-  mood: 0, // ambient sound level (0–1)
+  growth: 40,
+  maxGrowth: 90,
+  mood: 0
 };
 
 /**
- * Slow, organic growth
- * Growth stops visually but life continues
+ * Organic growth:
+ * grows stem first, then leaves subtly enlarge
  */
 setInterval(() => {
   if (terrarium.growth < terrarium.maxGrowth) {
-    terrarium.growth += Math.random() * 0.35;
+    terrarium.growth += Math.random() * 0.4;
     plant.style.height = terrarium.growth + "px";
+
+    const leafScale = 1 + terrarium.growth / terrarium.maxGrowth * 0.2;
+    leftLeaf.style.transform = `rotate(-25deg) scale(${leafScale})`;
+    rightLeaf.style.transform = `rotate(25deg) scale(${leafScale})`;
   }
-}, 1600);
+}, 1800);
 
 /**
- * Microphone-based ambient interaction
- * Smooth, non-binary response
+ * Microphone interaction
  */
 navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
   const audioContext = new AudioContext();
@@ -33,19 +47,17 @@ navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
   const source = audioContext.createMediaStreamSource(stream);
   source.connect(analyser);
 
-  const dataArray = new Uint8Array(analyser.frequencyBinCount);
+  const data = new Uint8Array(analyser.frequencyBinCount);
 
   function listen() {
-    analyser.getByteFrequencyData(dataArray);
+    analyser.getByteFrequencyData(data);
 
-    const average =
-      dataArray.reduce((sum, value) => sum + value, 0) /
-      dataArray.length /
-      255;
+    const volume =
+      data.reduce((a, b) => a + b, 0) / data.length / 255;
 
-    terrarium.mood = average;
+    terrarium.mood = volume;
 
-    if (average > 0.12) {
+    if (volume > 0.12) {
       plant.classList.add("dance");
     } else {
       plant.classList.remove("dance");
@@ -58,12 +70,11 @@ navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
 });
 
 /**
- * Subtle "breathing" when calm
- * Keeps the plant feeling alive during silence
+ * Calm breathing glow
  */
 setInterval(() => {
   if (terrarium.mood < 0.08) {
-    plant.style.filter = "brightness(1.08)";
+    plant.style.filter = "brightness(1.1)";
     setTimeout(() => {
       plant.style.filter = "brightness(1)";
     }, 900);
