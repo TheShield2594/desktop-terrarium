@@ -7,79 +7,110 @@ body {
   height: 100vh;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at top, #1f2230, #0e0f14);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: radial-gradient(circle at top, #20242f, #0f1117);
+  font-family: system-ui, sans-serif;
 }
 
-/* Terrarium container */
+/* === Pot === */
 #terrarium {
   position: relative;
   width: 220px;
-  height: 320px;
-  border-radius: 18px;
-  overflow: hidden;
-  backdrop-filter: blur(14px);
+  height: 300px;
 }
 
-/* Glass layer */
-.glass {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.18),
-    rgba(255, 255, 255, 0.04)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 18px;
-  pointer-events: none;
-}
-
-/* Dirt */
-.dirt {
+/* Pot body */
+.pot {
   position: absolute;
   bottom: 0;
-  width: 100%;
-  height: 64px;
-  background: linear-gradient(#3b2f24, #261e17);
+  left: 50%;
+  width: 140px;
+  height: 90px;
+  background: linear-gradient(#d8c7b2, #b89f88);
+  border-radius: 0 0 22px 22px;
+  transform: translateX(-50%);
 }
 
-/* Plant stem */
+/* Pot rim */
+.pot::before {
+  content: "";
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  width: 160px;
+  height: 26px;
+  background: linear-gradient(#e6d7c5, #c8b19b);
+  border-radius: 20px;
+  transform: translateX(-50%);
+}
+
+/* Soil */
+.soil {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 130px;
+  height: 22px;
+  background: #3a2b20;
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+/* === Plant === */
 #plant {
   position: absolute;
-  bottom: 64px;
+  bottom: 90px;
   left: 50%;
-  width: 12px;
-  height: 42px;
-  background: linear-gradient(#6deaa0, #2f8f5b);
-  border-radius: 8px;
-  transform-origin: bottom center;
+  width: 8px;
+  height: 40px;
+  background: linear-gradient(#6ee7a0, #2f8f5b);
+  border-radius: 6px;
   transform: translateX(-50%);
-  animation: idleSway 7s ease-in-out infinite;
-  filter: brightness(1);
-  transition: filter 1.2s ease;
+  transform-origin: bottom center;
+  animation: stemSway 6s ease-in-out infinite;
 }
 
-/* Gentle idle sway */
-@keyframes idleSway {
+/* Stem sway */
+@keyframes stemSway {
   0%, 100% {
-    transform: translateX(-50%) rotate(-1.2deg);
+    transform: translateX(-50%) rotate(-1deg);
   }
   50% {
-    transform: translateX(-50%) rotate(1.2deg);
+    transform: translateX(-50%) rotate(1deg);
   }
 }
 
-/* Lively movement when sound is present */
-#plant.dance {
-  animation: dance 1.4s ease-in-out infinite;
+/* Leaves */
+.leaf {
+  position: absolute;
+  width: 28px;
+  height: 14px;
+  background: linear-gradient(#8cf0b6, #3cbf7a);
+  border-radius: 50%;
+  transform-origin: center;
 }
 
-@keyframes dance {
+.leaf.left {
+  left: -22px;
+  top: 16px;
+  transform: rotate(-25deg);
+}
+
+.leaf.right {
+  right: -22px;
+  top: 24px;
+  transform: rotate(25deg);
+}
+
+/* Sound reaction */
+.dance {
+  animation: plantDance 1.2s ease-in-out infinite;
+}
+
+@keyframes plantDance {
   0%, 100% {
-    transform: translateX(-50%) rotate(-4deg);
+    transform: translateX(-50%) rotate(-6deg);
   }
   50% {
-    transform: translateX(-50%) rotate(4deg);
+    transform: translateX(-50%) rotate(6deg);
   }
 }
