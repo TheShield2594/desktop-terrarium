@@ -1,32 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desktop Terrarium</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Desktop Terrarium</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div id="game-container">
-        <div id="weather-tag">Weather: Detecting...</div>
-        
-        <div class="glass-jar">
-            <div id="plant-container">
-                <div id="plant" class="stage-1">
-                    <div class="leaf left"></div>
-                    <div class="leaf right"></div>
-                    <div class="stem"></div>
-                </div>
-            </div>
-            <div class="dirt"></div>
-        </div>
+  <div id="terrarium">
+    <div class="glass"></div>
+    <div class="dirt"></div>
+    <div id="plant"></div>
+  </div>
 
-        <div class="controls">
-            <button id="start-mic">Start Audio Reactivity</button>
-            <p id="status">Growth: <span id="growth-percent">0</span>%</p>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
