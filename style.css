@@ -1,0 +1,86 @@
+:root {
+    --bg-color: #a8dadc;
+    --dirt-color: #6d4c41;
+    --leaf-color: #81c784;
+    --glass-shine: rgba(255, 255, 255, 0.2);
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background: transparent; /* For desktop app feel */
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#game-container {
+    width: 300px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* The Terrarium Jar */
+.glass-jar {
+    width: 200px;
+    height: 250px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 4px solid #fff;
+    border-radius: 20px 20px 80px 80px;
+    position: relative;
+    box-shadow: inset 0 0 20px var(--glass-shine);
+}
+
+/* The Dirt */
+.dirt {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background: var(--dirt-color);
+    border-radius: 0 0 75px 75px;
+}
+
+/* Basic Pixel Plant */
+#plant {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: transform 0.1s ease-out;
+}
+
+.stem {
+    width: 10px;
+    height: 20px;
+    background: #4caf50;
+    margin: 0 auto;
+}
+
+.leaf {
+    width: 20px;
+    height: 15px;
+    background: var(--leaf-color);
+    position: absolute;
+    border-radius: 50%;
+}
+
+.leaf.left { left: -15px; top: 0; transform: rotate(-30deg); }
+.leaf.right { right: -15px; top: 0; transform: rotate(30deg); }
+
+/* Animation Classes */
+.dancing {
+    animation: bounce 0.4s infinite alternate;
+}
+
+@keyframes bounce {
+    from { transform: translateX(-50%) scaleY(1); }
+    to { transform: translateX(-50%) scaleY(1.2); }
+}
+
+.controls {
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 2px #000;
+}
