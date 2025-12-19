@@ -1,66 +1,71 @@
-let growth = 0;
-let isDancing = false;
-const plant = document.getElementById('plant');
-const growthText = document.getElementById('growth-percent');
-const weatherTag = document.getElementById('weather-tag');
+const plant = document.getElementById("plant");
 
-// 1. Weather Logic
-async function updateWeather() {
-    // In a real app, you'd fetch from an API. 
-    // Here, we simulate based on time of day.
-    const hours = new Date().getHours();
-    if (hours > 18 || hours < 6) {
-        weatherTag.innerText = "Weather: Night (Slow Growth)";
-        document.documentElement.style.setProperty('--leaf-color', '#5c6bc0');
+/**
+ * Centralized terrarium state
+ * (kept intentionally small)
+ */
+const terrarium = {
+  growth: 42,
+  maxGrowth: 96,
+  mood: 0, // ambient sound level (0–1)
+};
+
+/**
+ * Slow, organic growth
+ * Growth stops visually but life continues
+ */
+setInterval(() => {
+  if (terrarium.growth < terrarium.maxGrowth) {
+    terrarium.growth += Math.random() * 0.35;
+    plant.style.height = terrarium.growth + "px";
+  }
+}, 1600);
+
+/**
+ * Microphone-based ambient interaction
+ * Smooth, non-binary response
+ */
+navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+  const audioContext = new AudioContext();
+  const analyser = audioContext.createAnalyser();
+  analyser.fftSize = 256;
+
+  const source = audioContext.createMediaStreamSource(stream);
+  source.connect(analyser);
+
+  const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+  function listen() {
+    analyser.getByteFrequencyData(dataArray);
+
+    const average =
+      dataArray.reduce((sum, value) => sum + value, 0) /
+      dataArray.length /
+      255;
+
+    terrarium.mood = average;
+
+    if (average > 0.12) {
+      plant.classList.add("dance");
     } else {
-        weatherTag.innerText = "Weather: Sunny (Mutation Chance!)";
-        document.documentElement.style.setProperty('--leaf-color', '#81c784');
-    }
-}
-
-// 2. Audio Reactivity Logic
-document.getElementById('start-mic').addEventListener('click', async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const audioContext = new AudioContext();
-    const source = audioContext.createMediaStreamSource(stream);
-    const analyser = audioContext.createAnalyser();
-    analyser.fftSize = 256;
-    source.connect(analyser);
-
-    const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-    function checkVolume() {
-        analyser.getByteFrequencyData(dataArray);
-        let sum = 0;
-        for (let i = 0; i < dataArray.length; i++) {
-            sum += dataArray[i];
-        }
-        let average = sum / dataArray.length;
-
-        // If volume is high, start dancing and boost growth
-        if (average > 40) {
-            if (!isDancing) {
-                plant.classList.add('dancing');
-                isDancing = true;
-            }
-            growth += 0.05; // Music makes it grow faster!
-        } else {
-            plant.classList.remove('dancing');
-            isDancing = false;
-            growth += 0.01;
-        }
-
-        growthText.innerText = Math.floor(growth);
-        
-        // Visual growth scaling
-        const scale = 1 + (growth / 100);
-        plant.style.transform = `translateX(-50%) scale(${scale})`;
-
-        requestAnimationFrame(checkVolume);
+      plant.classList.remove("dance");
     }
 
-    checkVolume();
-    document.getElementById('start-mic').style.display = 'none';
+    requestAnimationFrame(listen);
+  }
+
+  listen();
 });
 
-updateWeather();
+/**
+ * Subtle "breathing" when calm
+ * Keeps the plant feeling alive during silence
+ */
+setInterval(() => {
+  if (terrarium.mood < 0.08) {
+    plant.style.filter = "brightness(1.08)";
+    setTimeout(() => {
+      plant.style.filter = "brightness(1)";
+    }, 900);
+  }
+}, 4200);
